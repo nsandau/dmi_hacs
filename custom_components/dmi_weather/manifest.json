@@ -1,9 +1,10 @@
 {
   "domain": "dmi_weather",
   "name": "DMI Weather for Home Assistant",
-  "documentation": "https://github.com/crusell/dmi_weather",
+  "documentation": "https://github.com/kimvonmullen/dmi_hacs",
+  "issue_tracker": "https://github.com/kimvonmullen/dmi_hacs/issues",
   "dependencies": [],
-  "codeowners": ["@crusell"],
+  "codeowners": ["@kimvonmullen"],
   "requirements": [],
   "version": "1.0.0",
   "config_flow": true,
