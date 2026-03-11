@@ -25,20 +25,16 @@ This integration provides:
 6. Search for **DMI Weather** in HACS Integrations
 7. Click **Install**
 8. Restart Home Assistant if prompted
-9. Go to **Settings → Devices & Services → Add Integration** and search for **DMI Weather**
 
 ### Manual Installation
 
 1. Download or clone this repository
 2. Copy the `custom_components/dmi_weather` folder into `config/custom_components/`
 3. Restart Home Assistant
-4. Add the integration via **Settings → Devices & Services**
 
 ---
 
 ## ⚙️ Configuration
-
-After installation:
 
 1. Go to **Settings → Devices & Services → Add Integration**
 2. Search for **DMI Weather** and click on it
@@ -49,6 +45,8 @@ After installation:
 4. Save — the weather entity is created immediately, no restart required
 
 To update settings, go to **Settings → Devices & Services → DMI Weather → Configure**.
+
+> **Note on Branding:** If the logo/icon does not show up immediately, clear your browser cache or use an incognito window. HACS and Home Assistant can sometimes take a moment to refresh brand assets.
 
 ---
 
@@ -74,19 +72,6 @@ Once configured, the integration creates a weather entity that reports current c
 - Precipitation amount
 - Wind speed and direction
 - Weather conditions
-
-### Example: Current Weather State
-
-```yaml
-state: "sunny"
-attributes:
-  temperature: 18.4
-  humidity: 62
-  pressure: 1013
-  wind_speed: 4.2
-  wind_bearing: 210
-  visibility: 25
-```
 
 ---
 
