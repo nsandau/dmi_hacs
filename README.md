@@ -1,8 +1,6 @@
 # DMI Weather Integration for Home Assistant
 
-> **Based on** the original work by [@crusell](https://github.com/crusell): [DMI_HA_Plugin](https://github.com/crusell/DMI_HA_Plugin). This project continues development from that foundation with additional improvements and HACS support.
-
-A fast and efficient Home Assistant integration for Danish Meteorological Institute (DMI) weather data using the EDR (Environmental Data Retrieval) API.
+> **Based on** the original work by [@crusell](https://github.com/crusell): [DMI_HA_Plugin](https://github.com/crusell/DMI_HA_Plugin). This project continues development from that foundation with additional improvements.
 
 This integration provides:
 - **Current weather conditions** with temperature, humidity, pressure, wind, and more
@@ -20,7 +18,7 @@ This integration provides:
 2. Click the three-dot menu (top right) → **Custom Repositories**
 3. Add this repository:
 ```
-   https://github.com/your-username/dmi_hacs
+   https://github.com/vondk/dmi_hacs
 ```
 4. Set category to: **Integration**
 5. Click **Add**
