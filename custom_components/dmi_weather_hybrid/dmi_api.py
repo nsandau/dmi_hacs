@@ -517,39 +517,12 @@ class DMIWeatherAPI:
                 187,
             }:
                 return "snowy"
-            if weather_code in {
-                10,
-                11,
-                12,
-                28,
-                40,
-                41,
-                42,
-                43,
-                44,
-                45,
-                46,
-                47,
-                48,
-                49,
-                110,
-                120,
-                130,
-                131,
-                132,
-                133,
-                134,
-                135,
-            }:
-                return "fog"
 
-        if visibility is not None and visibility < 1000:
-            return "fog"
         if precipitation is not None and precipitation > 0.1:
             return "rainy"
-        if cloud_cover is not None and cloud_cover >= 85:
+        if cloud_cover is not None and cloud_cover >= 80:
             return "cloudy"
-        if cloud_cover is not None and cloud_cover >= 35:
+        if cloud_cover is not None and cloud_cover >= 20:
             return "partlycloudy"
         return "sunny"
 
