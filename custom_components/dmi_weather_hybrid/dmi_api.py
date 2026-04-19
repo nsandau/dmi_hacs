@@ -239,14 +239,25 @@ class DMIWeatherAPI:
             raise RuntimeError("No time values found in DMI EDR response")
 
         hourly_data: list[dict[str, Any]] = []
+        last_precipitation = 0.0
         for index, time_str in enumerate(time_values):
             time_obj = self._parse_datetime(time_str)
             cloud_cover = self._extract_parameter_value(
                 ranges, EDR_PARAMETERS["cloud_cover"], index
             )
-            precipitation = self._extract_parameter_value(
+            raw_precipitation = self._extract_parameter_value(
                 ranges, EDR_PARAMETERS["precipitation"], index
             )
+
+            # Convert accumulated precipitation to hourly rate
+            precipitation = None
+            if raw_precipitation is not None:
+                if raw_precipitation >= last_precipitation:
+                    precipitation = raw_precipitation - last_precipitation
+                else:
+                    # Reset detected (new model run)
+                    precipitation = raw_precipitation
+                last_precipitation = raw_precipitation
 
             hourly_data.append(
                 {
