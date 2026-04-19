@@ -1,4 +1,5 @@
-"""DataUpdateCoordinator for DMI Weather."""
+"""DataUpdateCoordinator for DMI Weather Hybrid."""
+
 from __future__ import annotations
 
 import logging
@@ -16,7 +17,9 @@ _LOGGER = logging.getLogger(__name__)
 class DMIWeatherCoordinator(DataUpdateCoordinator):
     """Manages fetching DMI weather data on a schedule."""
 
-    def __init__(self, hass: HomeAssistant, api: DMIWeatherAPI, update_interval_minutes: int) -> None:
+    def __init__(
+        self, hass: HomeAssistant, api: DMIWeatherAPI, update_interval_minutes: int
+    ) -> None:
         self.api = api
         super().__init__(
             hass,

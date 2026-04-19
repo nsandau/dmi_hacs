@@ -1,14 +1,20 @@
-"""Support for DMI Weather EDR."""
+"""Support for DMI Weather Hybrid."""
+
 from __future__ import annotations
 
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
+    ATTR_FORECAST_CLOUD_COVERAGE,
+    ATTR_FORECAST_HUMIDITY,
+    ATTR_FORECAST_NATIVE_DEW_POINT,
     ATTR_FORECAST_NATIVE_PRECIPITATION,
+    ATTR_FORECAST_NATIVE_PRESSURE,
     ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW,
+    ATTR_FORECAST_NATIVE_WIND_GUST_SPEED,
+    ATTR_FORECAST_NATIVE_WIND_SPEED,
     ATTR_FORECAST_TIME,
     ATTR_FORECAST_WIND_BEARING,
-    ATTR_FORECAST_WIND_SPEED,
     Forecast,
     WeatherEntity,
     WeatherEntityFeature,
@@ -44,19 +50,23 @@ async def async_setup_entry(
 class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
     """Representation of a DMI Weather entity."""
 
-    _attr_attribution = "Data provided by Danish Meteorological Institute's (DMI) Open Data API"
+    _attr_attribution = (
+        "Data provided by Danish Meteorological Institute's (DMI) Open Data API"
+    )
     _attr_native_precipitation_unit = UnitOfPrecipitationDepth.MILLIMETERS
     _attr_native_pressure_unit = UnitOfPressure.HPA
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_visibility_unit = UnitOfLength.KILOMETERS
     _attr_native_wind_speed_unit = UnitOfSpeed.METERS_PER_SECOND
-    _attr_supported_features = WeatherEntityFeature.FORECAST_DAILY | WeatherEntityFeature.FORECAST_HOURLY
+    _attr_supported_features = (
+        WeatherEntityFeature.FORECAST_DAILY | WeatherEntityFeature.FORECAST_HOURLY
+    )
 
     def __init__(self, coordinator: DMIWeatherCoordinator, name: str) -> None:
-        """Initialize the DMI Weather EDR entity."""
+        """Initialize the DMI Weather Hybrid entity."""
         super().__init__(coordinator)
         self._attr_name = name
-        self._attr_unique_id = f"dmi_edr_{coordinator.api.latitude}_{coordinator.api.longitude}"
+        self._attr_unique_id = f"dmi_weather_hybrid_{coordinator.api.station_id}_{coordinator.api.latitude}_{coordinator.api.longitude}"
 
     @property
     def _current(self) -> dict:
@@ -98,6 +108,10 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
         return self._current.get("humidity")
 
     @property
+    def native_dew_point(self) -> float | None:
+        return self._current.get("dew_point")
+
+    @property
     def native_wind_gust_speed(self) -> float | None:
         return self._current.get("wind_gust")
 
@@ -118,7 +132,12 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
                 ATTR_FORECAST_NATIVE_TEMP: forecast.get("temperature_max"),
                 ATTR_FORECAST_NATIVE_TEMP_LOW: forecast.get("temperature_min"),
                 ATTR_FORECAST_NATIVE_PRECIPITATION: forecast.get("precipitation"),
-                ATTR_FORECAST_WIND_SPEED: forecast.get("wind_speed"),
+                ATTR_FORECAST_NATIVE_PRESSURE: forecast.get("pressure"),
+                ATTR_FORECAST_HUMIDITY: forecast.get("humidity"),
+                ATTR_FORECAST_NATIVE_DEW_POINT: forecast.get("dew_point"),
+                ATTR_FORECAST_CLOUD_COVERAGE: forecast.get("cloud_cover"),
+                ATTR_FORECAST_NATIVE_WIND_SPEED: forecast.get("wind_speed"),
+                ATTR_FORECAST_NATIVE_WIND_GUST_SPEED: forecast.get("wind_gust"),
                 ATTR_FORECAST_WIND_BEARING: forecast.get("wind_direction"),
             }
             weather_code = forecast.get("weather_code")
@@ -129,7 +148,9 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
 
     async def async_forecast_hourly(self) -> list[Forecast] | None:
         """Return the hourly forecast."""
-        hourly = self.coordinator.data.get("hourly", []) if self.coordinator.data else []
+        hourly = (
+            self.coordinator.data.get("hourly", []) if self.coordinator.data else []
+        )
         if not hourly:
             return None
 
@@ -139,7 +160,12 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
                 ATTR_FORECAST_TIME: forecast.get("time"),
                 ATTR_FORECAST_NATIVE_TEMP: forecast.get("temperature"),
                 ATTR_FORECAST_NATIVE_PRECIPITATION: forecast.get("precipitation"),
-                ATTR_FORECAST_WIND_SPEED: forecast.get("wind_speed"),
+                ATTR_FORECAST_NATIVE_PRESSURE: forecast.get("pressure"),
+                ATTR_FORECAST_HUMIDITY: forecast.get("humidity"),
+                ATTR_FORECAST_NATIVE_DEW_POINT: forecast.get("dew_point"),
+                ATTR_FORECAST_CLOUD_COVERAGE: forecast.get("cloud_cover"),
+                ATTR_FORECAST_NATIVE_WIND_SPEED: forecast.get("wind_speed"),
+                ATTR_FORECAST_NATIVE_WIND_GUST_SPEED: forecast.get("wind_gust"),
                 ATTR_FORECAST_WIND_BEARING: forecast.get("wind_direction"),
             }
             weather_code = forecast.get("weather_code")

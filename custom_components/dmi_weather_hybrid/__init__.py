@@ -1,9 +1,15 @@
-"""The DMI Weather integration."""
+"""The DMI Weather Hybrid integration."""
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, Platform
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
+from .const import (
+    CONF_STATION_ID,
+    CONF_UPDATE_INTERVAL,
+    DEFAULT_UPDATE_INTERVAL,
+    DOMAIN,
+)
 from .coordinator import DMIWeatherCoordinator
 from .dmi_api import DMIWeatherAPI
 
@@ -11,11 +17,22 @@ PLATFORMS: list[Platform] = [Platform.WEATHER]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up DMI Weather from a config entry."""
+    """Set up DMI Weather Hybrid from a config entry."""
     hass.data.setdefault(DOMAIN, {})
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
-    api = DMIWeatherAPI(hass, entry.data[CONF_LATITUDE], entry.data[CONF_LONGITUDE])
-    update_interval = entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+    station_id = entry.options.get(CONF_STATION_ID, entry.data[CONF_STATION_ID])
+    update_interval = entry.options.get(
+        CONF_UPDATE_INTERVAL,
+        entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+    )
+
+    api = DMIWeatherAPI(
+        hass,
+        entry.data[CONF_LATITUDE],
+        entry.data[CONF_LONGITUDE],
+        station_id,
+    )
     coordinator = DMIWeatherCoordinator(hass, api, update_interval)
 
     await coordinator.async_config_entry_first_refresh()
@@ -30,3 +47,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the integration when options change."""
+    await hass.config_entries.async_reload(entry.entry_id)

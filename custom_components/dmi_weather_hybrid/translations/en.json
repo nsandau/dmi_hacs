@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DMI Weather Hybrid",
+        "description": "Set up your DMI Weather Hybrid integration. Current values come from DMI station observations, and forecasts come from the DMI forecast model.\n\nLatitude and longitude are pre-filled from your Home Assistant system location — change them if you want forecasts for a different location.\n\nStation ID is required. Find valid DMI station IDs here: {docs_url}\n\nUpdate interval is in minutes (minimum 5, default 30).",
+        "data": {
+          "name": "Name",
+          "latitude": "Latitude (decimal degrees)",
+          "longitude": "Longitude (decimal degrees)",
+          "station_id": "DMI station ID",
+          "update_interval": "Update interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to DMI API",
+      "invalid_coordinates": "Invalid coordinates",
+      "invalid_station_id": "Invalid or inactive station ID",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "Service is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "DMI Weather Hybrid options",
+        "description": "Update the station ID used for current observations and the polling interval.\n\nFind valid DMI station IDs here: {docs_url}",
+        "data": {
+          "station_id": "DMI station ID",
+          "update_interval": "Update interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to DMI API",
+      "invalid_station_id": "Invalid or inactive station ID"
+    }
+  }
+}

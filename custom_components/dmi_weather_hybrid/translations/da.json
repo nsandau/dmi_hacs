@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DMI Vejr Hybrid",
+        "description": "Opsæt din DMI Vejr Hybrid-integration. Aktuelle værdier kommer fra DMI stationsobservationer, og forecast kommer fra DMI's forecastmodel.\n\nBreddegrad og længdegrad er forudfyldt fra din Home Assistants placering — skift dem, hvis du ønsker forecast for en anden placering.\n\nStation ID er påkrævet. Find gyldige DMI stations-ID'er her: {docs_url}\n\nOpdateringsinterval er i minutter (minimum 5, standard 30).",
+        "data": {
+          "name": "Navn",
+          "latitude": "Breddegrad (decimalgrader)",
+          "longitude": "Længdegrad (decimalgrader)",
+          "station_id": "DMI stations-ID",
+          "update_interval": "Opdateringsinterval (minutter)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke oprette forbindelse til DMI API",
+      "invalid_coordinates": "Ugyldige koordinater",
+      "invalid_station_id": "Ugyldigt eller inaktivt stations-ID",
+      "unknown": "Der opstod en uventet fejl"
+    },
+    "abort": {
+      "already_configured": "Tjenesten er allerede konfigureret"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Indstillinger for DMI Vejr Hybrid",
+        "description": "Opdater stations-ID'et til aktuelle observationer og integrations opdateringsinterval.\n\nFind gyldige DMI stations-ID'er her: {docs_url}",
+        "data": {
+          "station_id": "DMI stations-ID",
+          "update_interval": "Opdateringsinterval (minutter)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke oprette forbindelse til DMI API",
+      "invalid_station_id": "Ugyldigt eller inaktivt stations-ID"
+    }
+  }
+}

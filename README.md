@@ -1,142 +1,86 @@
-# DMI Weather Integration for Home Assistant
+# DMI Weather Hybrid for Home Assistant
 
-> **Based on** the original work by [@crusell](https://github.com/crusell): [DMI_HA_Plugin](https://github.com/crusell/DMI_HA_Plugin). This project continues development from that foundation with additional improvements.
+This integration is a separate Home Assistant integration with its own domain, `dmi_weather_hybrid`, so it can be installed alongside the original `dmi_weather` repository.
 
-This integration provides:
-- **Current weather conditions** with temperature, humidity, pressure, wind, and more
-- **24-hour hourly forecasts** with detailed weather parameters
-- **5-day daily forecasts** with high/low temperatures
-- **Purpose-built** for weather data retrieval
+It uses two DMI data sources:
 
----
+- **Current weather** from DMI station observations (`metObs`)
+- **Forecasts** from DMI forecast model data (`forecastedr`)
 
-## 📦 Installation
+## Installation
 
-### HACS (Recommended)
+### HACS
 
-1. Open **HACS** in Home Assistant
-2. Click the three-dot menu (top right) → **Custom Repositories**
-3. Add this repository:
-```
-   https://github.com/vondk/dmi_hacs
-```
-4. Set category to: **Integration**
-5. Click **Add**
-6. Search for **DMI Weather** in HACS Integrations
-7. Click **Install**
-8. Restart Home Assistant if prompted
+1. Open **HACS** in Home Assistant.
+2. Click the three-dot menu in the top right and choose **Custom repositories**.
+3. Add this repository URL:
 
-### Manual Installation
-
-1. Download or clone this repository
-2. Copy the `custom_components/dmi_weather` folder into `config/custom_components/`
-3. Restart Home Assistant
-
----
-
-## ⚙️ Configuration
-
-1. Go to **Settings → Devices & Services → Add Integration**
-2. Search for **DMI Weather** and click on it
-3. Enter your location details:
-   - **Name**: A friendly name for your weather entity (e.g., `Copenhagen Weather`)
-   - **Latitude**: The latitude of your location (e.g., `55.6761`)
-   - **Longitude**: The longitude of your location (e.g., `12.5683`)
-4. Save — the weather entity is created immediately, no restart required
-
-To update settings, go to **Settings → Devices & Services → DMI Weather → Configure**.
-
-> **Note on Branding:** If the logo/icon does not show up immediately, clear your browser cache or use an incognito window. HACS and Home Assistant can sometimes take a moment to refresh brand assets.
-
----
-
-## 🌤️ Sensor Behavior
-
-Once configured, the integration creates a weather entity that reports current conditions and forecasts.
-
-### Current Weather
-
-| Parameter         | Unit    | Description                        |
-| ----------------- | ------- | ---------------------------------- |
-| Temperature       | °C      | Current air temperature            |
-| Humidity          | %       | Relative humidity                  |
-| Pressure          | hPa     | Atmospheric pressure               |
-| Wind Speed        | m/s     | Wind speed                         |
-| Wind Direction    | degrees | Wind bearing                       |
-| Weather Condition | —       | Clear, cloudy, rain, snow, etc.    |
-| Visibility        | km      | Horizontal visibility              |
-
-### Daily Forecast
-
-- Maximum and minimum temperatures
-- Precipitation amount
-- Wind speed and direction
-- Weather conditions
-
----
-
-## 🗃️ Data Source
-
-This integration uses the **DMI HARMONIE DINI IG** weather model, which provides:
-
-- High-resolution weather forecasts
-- Coverage for Denmark and surrounding areas
-- Updates every 6 hours
-- Data available for up to 5 days ahead
-
-For more information about the DMI Open Data API, visit: https://www.dmi.dk/friedata/dokumentation-paa-engelsk
-
----
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-1. **No data available**
-   - Verify your coordinates are within the DMI coverage area (Denmark and surrounding regions)
-   - Try slightly different coordinates if the exact location returns no data
-
-2. **API errors**
-   - Check your internet connection
-   - Check DMI API status
-
-### Debug Logging
-
-To enable debug logging, enable it in the UI under the device, or add the following to your `configuration.yaml`:
-
-```yaml
-logger:
-  default: info
-  logs:
-    custom_components.dmi_weather: debug
+```text
+https://github.com/vondk/dmi_hacs
 ```
 
----
+4. Select category **Integration**.
+5. Search for **DMI Weather Hybrid**.
+6. Install it.
 
-## 🔗 Related Projects
+Because this integration uses the domain `dmi_weather_hybrid`, it does not collide with the original `dmi_weather` integration.
 
-- [@crusell](https://github.com/crusell)'s original [DMI_HA_Plugin](https://github.com/crusell/DMI_HA_Plugin) — the foundation this project is built upon
-- [Home Assistant](https://www.home-assistant.io/) — the excellent smart home framework
+### Manual installation
 
----
+Copy `custom_components/dmi_weather_hybrid` into your Home Assistant `config/custom_components/` directory.
 
-## 🤝 Contributing
+## Configuration
 
-Feel free to contribute to this project by:
-- Reporting bugs
-- Suggesting new features
-- Submitting pull requests
+Add the integration from **Settings -> Devices & Services -> Add Integration** and select **DMI Weather Hybrid**.
 
----
+The setup requires:
 
-## 📄 License
+- `name`
+- `latitude`
+- `longitude`
+- `station_id`
+- `update_interval`
 
-MIT License — see `LICENSE` file for details
+`station_id` is required because current values are read from a specific DMI observation station.
 
----
+Find valid station IDs here:
 
-## 🙏 Acknowledgments
+- https://www.dmi.dk/friedata/dokumentation/data/meteorological-observation-data-stations
 
-- [@crusell](https://github.com/crusell) for the original [DMI_HA_Plugin](https://github.com/crusell/DMI_HA_Plugin)
-- Danish Meteorological Institute (DMI) for providing the Open Data API
-- Home Assistant community for the excellent framework
+## Data behavior
+
+### Current values
+
+Current values come from the configured DMI station when that station provides them:
+
+- temperature
+- humidity
+- dew point
+- pressure
+- wind speed
+- wind gust
+- wind direction
+- visibility
+- cloud coverage
+- weather condition
+
+If the selected station does not publish a specific value, that field is left unavailable instead of being guessed.
+
+### Forecast
+
+Forecast data comes from DMI's HARMONIE EDR model and is exposed as:
+
+- hourly forecast
+- daily forecast
+
+The forecast continues to use location coordinates, not the station position.
+
+## Notes
+
+- No API key is required.
+- The integration is intended for Denmark, Greenland, and Faroe Islands where DMI station and forecast coverage exists.
+- The observation feed is raw station data from DMI and may occasionally have missing parameters.
+
+## Credits
+
+Based on the original DMI Home Assistant work by [@crusell](https://github.com/crusell) and further adapted here into a separate hybrid integration.
