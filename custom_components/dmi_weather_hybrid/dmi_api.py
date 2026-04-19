@@ -254,6 +254,9 @@ class DMIWeatherAPI:
             if raw_precipitation is not None:
                 if raw_precipitation >= last_precipitation:
                     precipitation = raw_precipitation - last_precipitation
+                elif last_precipitation - raw_precipitation < 0.1:
+                    # Ignore tiny floating point drops in the model accumulator
+                    precipitation = 0.0
                 else:
                     # Reset detected (new model run)
                     precipitation = raw_precipitation
