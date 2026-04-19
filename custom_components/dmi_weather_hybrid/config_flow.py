@@ -11,8 +11,10 @@ _LOGGER = logging.getLogger(__name__)
 from homeassistant import config_entries
 from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import selector
 
 from .const import (
+    CONF_FORECAST_ENTITY,
     CONF_STATION_ID,
     CONF_UPDATE_INTERVAL,
     DEFAULT_NAME,
@@ -64,6 +66,12 @@ class DMIWeatherConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL
                     ),
                 ): vol.All(int, vol.Range(min=5, max=1440)),
+                vol.Optional(
+                    CONF_FORECAST_ENTITY,
+                    default=user_input.get(CONF_FORECAST_ENTITY, ""),
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="weather")
+                ),
             }
         )
 
@@ -156,6 +164,18 @@ class DMIWeatherHybridOptionsFlow(config_entries.OptionsFlow):
                         ),
                     ),
                 ): vol.All(int, vol.Range(min=5, max=1440)),
+                vol.Optional(
+                    CONF_FORECAST_ENTITY,
+                    default=user_input.get(
+                        CONF_FORECAST_ENTITY,
+                        self.config_entry.options.get(
+                            CONF_FORECAST_ENTITY,
+                            self.config_entry.data.get(CONF_FORECAST_ENTITY, ""),
+                        ),
+                    ),
+                ): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="weather")
+                ),
             }
         )
 
@@ -186,6 +206,9 @@ class DMIWeatherHybridOptionsFlow(config_entries.OptionsFlow):
                         data={
                             CONF_STATION_ID: station_id,
                             CONF_UPDATE_INTERVAL: user_input[CONF_UPDATE_INTERVAL],
+                            CONF_FORECAST_ENTITY: user_input.get(
+                                CONF_FORECAST_ENTITY, ""
+                            ),
                         },
                     )
             except Exception as err:

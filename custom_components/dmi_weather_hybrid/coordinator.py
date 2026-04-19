@@ -18,9 +18,14 @@ class DMIWeatherCoordinator(DataUpdateCoordinator):
     """Manages fetching DMI weather data on a schedule."""
 
     def __init__(
-        self, hass: HomeAssistant, api: DMIWeatherAPI, update_interval_minutes: int
+        self,
+        hass: HomeAssistant,
+        api: DMIWeatherAPI,
+        update_interval_minutes: int,
+        forecast_entity: str = "",
     ) -> None:
         self.api = api
+        self.forecast_entity = forecast_entity
         super().__init__(
             hass,
             _LOGGER,
@@ -30,7 +35,7 @@ class DMIWeatherCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict:
         try:
-            await self.api.update()
+            await self.api.update(fetch_forecast=not bool(self.forecast_entity))
             return {
                 "current": self.api.current_data,
                 "hourly": self.api.hourly_forecast_data,

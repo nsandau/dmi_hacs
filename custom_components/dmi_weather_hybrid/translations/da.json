@@ -9,7 +9,8 @@
           "latitude": "Breddegrad (decimalgrader)",
           "longitude": "Længdegrad (decimalgrader)",
           "station_id": "DMI stations-ID",
-          "update_interval": "Opdateringsinterval (minutter)"
+          "update_interval": "Opdateringsinterval (minutter)",
+          "forecast_entity": "Ekstern vejrudsigtskilde (valgfri)"
         }
       }
     },
@@ -30,7 +31,8 @@
         "description": "Opdater stations-ID'et til aktuelle observationer og integrations opdateringsinterval.\n\nFind gyldige DMI stations-ID'er her: {docs_url}",
         "data": {
           "station_id": "DMI stations-ID",
-          "update_interval": "Opdateringsinterval (minutter)"
+          "update_interval": "Opdateringsinterval (minutter)",
+          "forecast_entity": "Ekstern vejrudsigtskilde (valgfri)"
         }
       }
     },

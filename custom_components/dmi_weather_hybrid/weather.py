@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from homeassistant.components.weather import (
     ATTR_FORECAST_CONDITION,
     ATTR_FORECAST_CLOUD_COVERAGE,
@@ -34,6 +36,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import DMIWeatherCoordinator
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -121,6 +125,34 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
 
     async def async_forecast_daily(self) -> list[Forecast] | None:
         """Return the daily forecast."""
+        if getattr(self.coordinator, "forecast_entity", None):
+            try:
+                response = await self.hass.services.async_call(
+                    "weather",
+                    "get_forecasts",
+                    {"entity_id": self.coordinator.forecast_entity, "type": "daily"},
+                    blocking=True,
+                    return_response=True,
+                )
+                entity_data = (
+                    response.get(self.coordinator.forecast_entity, {})
+                    if isinstance(response, dict)
+                    else {}
+                )
+                forecasts = (
+                    entity_data.get("forecast", [])
+                    if isinstance(entity_data, dict)
+                    else []
+                )
+                return [Forecast(**f) for f in forecasts] if forecasts else None
+            except Exception as err:
+                _LOGGER.debug(
+                    "Failed fetching external daily forecast from %s: %s",
+                    self.coordinator.forecast_entity,
+                    err,
+                )
+                return None
+
         daily = self.coordinator.data.get("daily", []) if self.coordinator.data else []
         if not daily:
             return None
@@ -148,6 +180,34 @@ class DMIWeatherEntity(CoordinatorEntity[DMIWeatherCoordinator], WeatherEntity):
 
     async def async_forecast_hourly(self) -> list[Forecast] | None:
         """Return the hourly forecast."""
+        if getattr(self.coordinator, "forecast_entity", None):
+            try:
+                response = await self.hass.services.async_call(
+                    "weather",
+                    "get_forecasts",
+                    {"entity_id": self.coordinator.forecast_entity, "type": "hourly"},
+                    blocking=True,
+                    return_response=True,
+                )
+                entity_data = (
+                    response.get(self.coordinator.forecast_entity, {})
+                    if isinstance(response, dict)
+                    else {}
+                )
+                forecasts = (
+                    entity_data.get("forecast", [])
+                    if isinstance(entity_data, dict)
+                    else []
+                )
+                return [Forecast(**f) for f in forecasts] if forecasts else None
+            except Exception as err:
+                _LOGGER.debug(
+                    "Failed fetching external hourly forecast from %s: %s",
+                    self.coordinator.forecast_entity,
+                    err,
+                )
+                return None
+
         hourly = (
             self.coordinator.data.get("hourly", []) if self.coordinator.data else []
         )

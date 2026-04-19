@@ -9,7 +9,8 @@
           "latitude": "Latitude (decimal degrees)",
           "longitude": "Longitude (decimal degrees)",
           "station_id": "DMI station ID",
-          "update_interval": "Update interval (minutes)"
+          "update_interval": "Update interval (minutes)",
+          "forecast_entity": "External forecast provider (optional)"
         }
       }
     },
@@ -30,7 +31,8 @@
         "description": "Update the station ID used for current observations and the polling interval.\n\nFind valid DMI station IDs here: {docs_url}",
         "data": {
           "station_id": "DMI station ID",
-          "update_interval": "Update interval (minutes)"
+          "update_interval": "Update interval (minutes)",
+          "forecast_entity": "External forecast provider (optional)"
         }
       }
     },

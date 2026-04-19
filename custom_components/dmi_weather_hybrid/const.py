@@ -6,6 +6,7 @@ CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 CONF_NAME = "name"
 CONF_STATION_ID = "station_id"
+CONF_FORECAST_ENTITY = "forecast_entity"
 DEFAULT_NAME = "DMI Weather Hybrid"
 
 # DMI API configuration

@@ -109,7 +109,7 @@ class DMIWeatherAPI:
             return False
         return True
 
-    async def update(self) -> None:
+    async def update(self, fetch_forecast: bool = True) -> None:
         """Fetch current observations and forecast data."""
         if self._update_lock.locked():
             _LOGGER.debug("Update already in progress, skipping concurrent request")
@@ -117,7 +117,12 @@ class DMIWeatherAPI:
 
         async with self._update_lock:
             await self._fetch_current_observations()
-            await self._fetch_forecast_data("harmonie_dini_sf")
+            if fetch_forecast:
+                await self._fetch_forecast_data("harmonie_dini_sf")
+            else:
+                self.hourly_forecast_data = []
+                self.forecast_data = []
+                self.daily_forecast_data = []
 
     async def _fetch_current_observations(self) -> None:
         """Fetch recent observation data for the configured station."""

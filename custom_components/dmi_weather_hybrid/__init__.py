@@ -5,6 +5,7 @@ from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, Platform
 from homeassistant.core import HomeAssistant
 
 from .const import (
+    CONF_FORECAST_ENTITY,
     CONF_STATION_ID,
     CONF_UPDATE_INTERVAL,
     DEFAULT_UPDATE_INTERVAL,
@@ -26,6 +27,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         CONF_UPDATE_INTERVAL,
         entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
     )
+    forecast_entity = entry.options.get(
+        CONF_FORECAST_ENTITY,
+        entry.data.get(CONF_FORECAST_ENTITY, ""),
+    )
 
     api = DMIWeatherAPI(
         hass,
@@ -33,7 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data[CONF_LONGITUDE],
         station_id,
     )
-    coordinator = DMIWeatherCoordinator(hass, api, update_interval)
+    coordinator = DMIWeatherCoordinator(hass, api, update_interval, forecast_entity)
 
     await coordinator.async_config_entry_first_refresh()
 
